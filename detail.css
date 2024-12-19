@@ -8,6 +8,7 @@ body {
   margin: 20px auto;
   padding: 20px;
   background: #fff;
+  width: 80%;
 }
 
 h1 {
@@ -66,6 +67,8 @@ h1 {
 }
 .neighbour-countries {
   margin-top: 20px;
+  border: 1px solid black;
+  padding: 10px;
 }
 
 .flags-container {
@@ -76,8 +79,8 @@ h1 {
 
 .neighbour-flag {
   display: inline-block;
-  width: 50px;
-  height: 30px;
+  width: 250px;
+  height: 200px;
 }
 
 .flag-image {

@@ -14,7 +14,7 @@ main {
 }
 
 .container {
-  width: 50%; /* 60% of the screen width */
+  width: 60%; /* 60% of the screen width */
   height: 100vh; /* Full height of the viewport */
   background-color: #fff; /* White background for the container */
   display: flex;
