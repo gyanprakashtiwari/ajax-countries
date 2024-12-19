@@ -14,8 +14,7 @@ async function fetchCountryDetails(code) {
       throw new Error(`Error fetching country details: ${response.statusText}`);
     }
     const data = await response.json();
-    console.log(data);
-    return data;
+    return data[0]; // Return the first object from the array
   } catch (error) {
     console.error(error);
     return null;
@@ -24,12 +23,13 @@ async function fetchCountryDetails(code) {
 
 // Helper function to get the first non-English native name
 function getNonEnglishNativeName(nativeNames) {
+  if (!nativeNames) return "N/A";
   for (const langCode in nativeNames) {
     if (langCode !== "eng" && nativeNames[langCode]?.common) {
       return nativeNames[langCode].common;
     }
   }
-  return "N/A"; // Fallback if no non-English native name is found
+  return "N/A";
 }
 
 // Function to fetch all countries
@@ -39,8 +39,7 @@ async function fetchAllCountries() {
     if (!response.ok) {
       throw new Error(`Error fetching all countries: ${response.statusText}`);
     }
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     console.error(error);
     return [];
@@ -57,10 +56,9 @@ function renderCountryDetails(country) {
     return;
   }
 
-  // Get non-English native name
-  const nativeName = getNonEnglishNativeName(country.name?.nativeName) || "N/A";
-
-  const capital = country.capital || "N/A";
+  // Extract country details
+  const nativeName = getNonEnglishNativeName(country.name?.nativeName);
+  const capital = country.capital?.[0] || "N/A";
   const region = country.region || "N/A";
   const subregion = country.subregion || "N/A";
   const population = country.population
@@ -84,30 +82,31 @@ function renderCountryDetails(country) {
 
   // Generate HTML for country details
   const html = `
-        <div class="country-header">
-          <h2>${country.name.common}</h2>
-          <img src="${
-            country.flags?.svg || "https://via.placeholder.com/150"
-          }" alt="Flag of ${country.name.common}" class="country-flag" />
-        </div>
-        <div class="details-content">
-          <p><strong>Native Name:</strong> ${nativeName}</p>
-          <p><strong>Capital:</strong> ${capital}</p>
-          <p><strong>Region:</strong> ${region}</p>
-          <p><strong>Subregion:</strong> ${subregion}</p>
-          <p><strong>Area:</strong> ${area} Km <sup>2</sup></p>
-          <p><strong>Population:</strong> ${population}</p>
-          <p><strong>Languages:</strong> ${languages}</p>
-          <p><strong>Country Code:</strong> ${countryPhoneCode}</p>
-          <p><strong>Currencies:</strong> ${currencies}</p>
-          <p><strong>Timezones:</strong> ${timezones}</p>
-          <p><strong>Google Maps:</strong> <a href="${googleMapsLink}" target="_blank">View on Map</a></p>
-        </div>
-      `;
+      <div class="country-header">
+        <h2>${country.name.common}</h2>
+        <img src="${
+          country.flags?.svg || "https://via.placeholder.com/150"
+        }" alt="Flag of ${country.name.common}" class="country-flag" />
+      </div>
+      <div class="details-content">
+        <p><strong>Native Name:</strong> ${nativeName}</p>
+        <p><strong>Capital:</strong> ${capital}</p>
+        <p><strong>Region:</strong> ${region}</p>
+        <p><strong>Subregion:</strong> ${subregion}</p>
+        <p><strong>Area:</strong> ${area} Km<sup>2</sup></p>
+        <p><strong>Population:</strong> ${population}</p>
+        <p><strong>Languages:</strong> ${languages}</p>
+        <p><strong>Country Code:</strong> ${countryPhoneCode}</p>
+        <p><strong>Currencies:</strong> ${currencies}</p>
+        <p><strong>Timezones:</strong> ${timezones}</p>
+        <p><strong>Google Maps:</strong> <a href="${googleMapsLink}" target="_blank">View on Map</a></p>
+      </div>
+    `;
 
   container.innerHTML = html;
 }
-// Function to render neighbour countries
+
+// Function to render neighbouring countries
 async function renderNeighbourCountries(subregion, currentCountryName) {
   const neighbourContainer = document.getElementById("neighbour-countries");
 
@@ -126,25 +125,25 @@ async function renderNeighbourCountries(subregion, currentCountryName) {
     return;
   }
 
-  // Generate HTML for neighbour countries' flags
+  // Generate HTML for neighbouring countries' flags
   const flagsHTML = neighbourCountries
     .map((country) => {
       return `
-            <div class="neighbour-flag">
-              <img src="${
-                country.flags?.svg || "https://via.placeholder.com/50"
-              }" alt="Flag of ${country.name.common}" class="flag-image" />
-            </div>
-          `;
+          <div class="neighbour-flag">
+            <img src="${
+              country.flags?.svg || "https://via.placeholder.com/50"
+            }" alt="Flag of ${country.name.common}" class="flag-image" />
+          </div>
+        `;
     })
     .join("");
 
   neighbourContainer.innerHTML = `
-        <h3>Neighbour Countries</h3>
-        <div class="flags-container">
-          ${flagsHTML}
-        </div>
-      `;
+      <h3>Neighbour Countries</h3>
+      <div class="flags-container">
+        ${flagsHTML}
+      </div>
+    `;
 }
 
 // Main function to initialize the page
@@ -160,12 +159,11 @@ async function init() {
   // Fetch and render country details
   const countryData = await fetchCountryDetails(countryCode.toUpperCase());
   if (countryData) {
-    const currentCountry = countryData[0];
-    renderCountryDetails(currentCountry);
+    renderCountryDetails(countryData);
 
     // After country details are rendered, fetch and render neighbour countries
-    const subregion = currentCountry.subregion;
-    const currentCountryName = currentCountry.name.common;
+    const subregion = countryData.subregion;
+    const currentCountryName = countryData.name.common;
     await renderNeighbourCountries(subregion, currentCountryName);
   } else {
     document.getElementById("country-details").innerHTML =

@@ -1,3 +1,4 @@
+// Function to calculate the current datetime based on a timezone
 function calculateDatetime(timezone) {
   // Create a Date object in UTC format
   const nowUTC = new Date(
@@ -12,7 +13,6 @@ function calculateDatetime(timezone) {
 
       return formatDatetime(localTime);
     } catch (error) {
-      //   console.error("Error parsing UTC offset:", error);
       return formatDatetime(new Date()); // Fallback to browser's local timezone
     }
   } else {
@@ -68,34 +68,24 @@ function getOrdinalSuffix(day) {
   }
 }
 
-
-// Function to make an AJAX call and render cards
-function fetchCountriesWithAjax() {
-  const xhr = new XMLHttpRequest();
+// Function to fetch countries and render cards dynamically
+async function fetchCountriesWithAjax() {
   const apiURL = "https://restcountries.com/v3.1/all"; // API to fetch country data
 
-  // Open a GET request
-  xhr.open("GET", apiURL, true);
-
-  // Define what happens on successful data submission
-  xhr.onload = function () {
-    if (xhr.status === 200) {
-      const countries = JSON.parse(xhr.responseText); // Parse JSON response
-      console.log("API Response:", countries[0]);
-      renderCountries(countries); // Render all countries initially
-      setupSearch(countries); // Set up search functionality
-    } else {
-      console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+  try {
+    const response = await fetch(apiURL);
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
     }
-  };
 
-  // Define what happens in case of an error
-  xhr.onerror = function () {
-    console.error("Request failed.");
-  };
+    const countries = await response.json(); // Parse JSON response
+    console.log("API Response:", countries[0]);
 
-  // Send the request
-  xhr.send();
+    renderCountries(countries); // Render all countries initially
+    setupSearch(countries); // Set up search functionality
+  } catch (error) {
+    console.error("Request failed:", error.message);
+  }
 }
 
 // Function to render country cards dynamically
@@ -114,29 +104,29 @@ function renderCountries(countries) {
 
     // Create the card HTML
     card.innerHTML = `
-          <img
-            src="${country.flags?.svg || "https://via.placeholder.com/150"}"
-            alt="Flag of ${country.name.common}"
-            class="card-image"
-          />
-          <div class="card-content">
-            <h2 class="card-heading">${country.name.common}</h2>
-            <p class="card-currency">Currency: ${
-              Object.values(country.currencies || {})
-                .map((c) => c.name)
-                .join(", ") || "N/A"
-            }</p>
-            <p class="card-datetime">Current Date and Time: ${currentDatetime}</p>
-            <div class="card-buttons">
-              <button class="card-button" data-maps-link="${
-                country.maps?.googleMaps || "#"
-              }">Show Map</button>
-              <button class="card-button" data-country-code="${
-                country.cca3
-              }">Detail</button>
+            <img
+              src="${country.flags?.svg || "https://via.placeholder.com/150"}"
+              alt="Flag of ${country.name.common}"
+              class="card-image"
+            />
+            <div class="card-content">
+              <h2 class="card-heading">${country.name.common}</h2>
+              <p class="card-currency">Currency: ${
+                Object.values(country.currencies || {})
+                  .map((c) => c.name)
+                  .join(", ") || "N/A"
+              }</p>
+              <p class="card-datetime">Current Date and Time: ${currentDatetime}</p>
+              <div class="card-buttons">
+                <button class="card-button" data-maps-link="${
+                  country.maps?.googleMaps || "#"
+                }">Show Map</button>
+                <button class="card-button" data-country-code="${
+                  country.cca3
+                }">Detail</button>
+              </div>
             </div>
-          </div>
-        `;
+          `;
 
     // Add event listeners for the buttons
     const mapButton = card.querySelector("[data-maps-link]");
