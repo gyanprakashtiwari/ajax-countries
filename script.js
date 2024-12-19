@@ -73,7 +73,13 @@ async function fetchCountriesWithAjax() {
   const apiURL = "https://restcountries.com/v3.1/all"; // API to fetch country data
 
   try {
-    const response = await fetch(apiURL);
+    const response = await fetch(apiURL, {
+      method: "GET",
+      headers: {
+        Accept: "application/json", // Ensures response is in JSON format
+      },
+      mode: "cors", // Ensures CORS is handled correctly
+    });
     if (!response.ok) {
       throw new Error(`Error: ${response.status} - ${response.statusText}`);
     }
@@ -104,29 +110,29 @@ function renderCountries(countries) {
 
     // Create the card HTML
     card.innerHTML = `
-            <img
-              src="${country.flags?.svg || "https://via.placeholder.com/150"}"
-              alt="Flag of ${country.name.common}"
-              class="card-image"
-            />
-            <div class="card-content">
-              <h2 class="card-heading">${country.name.common}</h2>
-              <p class="card-currency">Currency: ${
-                Object.values(country.currencies || {})
-                  .map((c) => c.name)
-                  .join(", ") || "N/A"
-              }</p>
-              <p class="card-datetime">Current Date and Time: ${currentDatetime}</p>
-              <div class="card-buttons">
-                <button class="card-button" data-maps-link="${
-                  country.maps?.googleMaps || "#"
-                }">Show Map</button>
-                <button class="card-button" data-country-code="${
-                  country.cca3
-                }">Detail</button>
+              <img
+                src="${country.flags?.svg || "https://via.placeholder.com/150"}"
+                alt="Flag of ${country.name.common}"
+                class="card-image"
+              />
+              <div class="card-content">
+                <h2 class="card-heading">${country.name.common}</h2>
+                <p class="card-currency">Currency: ${
+                  Object.values(country.currencies || {})
+                    .map((c) => c.name)
+                    .join(", ") || "N/A"
+                }</p>
+                <p class="card-datetime">Current Date and Time: ${currentDatetime}</p>
+                <div class="card-buttons">
+                  <button class="card-button" data-maps-link="${
+                    country.maps?.googleMaps || "#"
+                  }">Show Map</button>
+                  <button class="card-button" data-country-code="${
+                    country.cca3
+                  }">Detail</button>
+                </div>
               </div>
-            </div>
-          `;
+            `;
 
     // Add event listeners for the buttons
     const mapButton = card.querySelector("[data-maps-link]");
