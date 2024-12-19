@@ -64,3 +64,24 @@ h1 {
 .details-content a:hover {
   text-decoration: underline;
 }
+
+.neighbour-countries {
+  margin-top: 20px;
+}
+
+.flags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.neighbour-flag {
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+}
+
+.flag-image {
+  width: 100%;
+  height: auto;
+}
