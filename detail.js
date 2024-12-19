@@ -8,7 +8,7 @@ function getQueryParameter(name) {
 async function fetchCountryDetails(code) {
   try {
     const apiURL = `https://restcountries.com/v3.1/alpha/${code}`;
-    const proxyURL = "https://ajax-countries.vercel.app/" + apiURL; // CORS Proxy URL
+    const proxyURL = "https://api.allorigins.win/" + apiURL; // CORS Proxy URL
     // const proxyURL = "" + apiURL; // CORS Proxy URL
 
     const response = await fetch(proxyURL, {
@@ -45,7 +45,7 @@ function getNonEnglishNativeName(nativeNames) {
 async function fetchAllCountries() {
   try {
     const apiURL = "https://restcountries.com/v3.1/all";
-    const proxyURL = "https://ajax-countries.vercel.app/" + apiURL; // CORS Proxy URL
+    const proxyURL = "https://api.allorigins.win/" + apiURL; // CORS Proxy URL
     // const proxyURL = "" + apiURL; // CORS Proxy URL
 
     const response = await fetch(proxyURL, {
