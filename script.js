@@ -71,8 +71,8 @@ function getOrdinalSuffix(day) {
 // Function to fetch countries and render cards dynamically
 async function fetchCountriesWithAjax() {
   const apiURL = "https://restcountries.com/v3.1/all"; // API to fetch country data
-  const proxyURL = `https://api.allorigins.win/get?url=${encodeURIComponent(apiURL)}`; // CORS Proxy URL
-  //   const proxyURL = "" + apiURL; // CORS Proxy URL
+//   const proxyURL = `https://api.allorigins.win/get?url=${encodeURIComponent(apiURL)}`; // CORS Proxy URL
+    const proxyURL = "" + apiURL; // CORS Proxy URL
 
   try {
     const response = await fetch(proxyURL, {
