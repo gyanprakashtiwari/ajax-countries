@@ -22,6 +22,16 @@ async function fetchCountryDetails(code) {
   }
 }
 
+// Helper function to get the first non-English native name
+function getNonEnglishNativeName(nativeNames) {
+  for (const langCode in nativeNames) {
+    if (langCode !== "eng" && nativeNames[langCode]?.common) {
+      return nativeNames[langCode].common;
+    }
+  }
+  return "N/A"; // Fallback if no non-English native name is found
+}
+
 // Function to render country details
 function renderCountryDetails(country) {
   const container = document.getElementById("country-details");
@@ -32,28 +42,52 @@ function renderCountryDetails(country) {
     return;
   }
 
+  // Get non-English native name
+  const nativeName = getNonEnglishNativeName(country.name?.nativeName) || "N/A";
+
+  const capital = country.capital || "N/A";
+  const region = country.region || "N/A";
+  const subregion = country.subregion || "N/A";
+  const population = country.population
+    ? country.population.toLocaleString()
+    : "N/A";
+  const area = country.area ? country.population.toLocaleString() : "N/A";
+  const languages = country.languages
+    ? Object.values(country.languages).join(", ")
+    : "N/A";
+  const currencies = country.a
+    ? Object.values(country.currencies)
+        .map((c) => `${c.name} (${c.symbol})`)
+        .join(", ")
+    : "N/A";
+  const countryPhoneCode =
+    country.idd?.root && country.idd?.suffixes?.[0]
+      ? `${country.idd.root}${country.idd.suffixes[0]}`
+      : "N/A";
+  const timezones = country.timezones ? country.timezones.join(", ") : "N/A";
+  const googleMapsLink = country.maps?.googleMaps || "#";
+
   // Generate HTML for country details
   const html = `
-      <img src="${
-        country.flags?.svg || "https://via.placeholder.com/150"
-      }" alt="Flag of ${country.name.common}" class="country-flag" />
-      <h2>${country.name.common}</h2>
-      <p><strong>Official Name:</strong> ${country.name.official}</p>
-      <p><strong>Region:</strong> ${country.region}</p>
-      <p><strong>Subregion:</strong> ${country.subregion || "N/A"}</p>
-      <p><strong>Population:</strong> ${country.population.toLocaleString()}</p>
-      <p><strong>Languages:</strong> ${Object.values(
-        country.languages || {}
-      ).join(", ")}</p>
-      <p><strong>Currencies:</strong> ${
-        Object.values(country.currencies || {})
-          .map((c) => `${c.name} (${c.symbol})`)
-          .join(", ") || "N/A"
-      }</p>
-      <p><strong>Timezones:</strong> ${country.timezones.join(", ")}</p>
-      <p><strong>Google Maps:</strong> <a href="${
-        country.maps?.googleMaps || "#"
-      }" target="_blank">View on Map</a></p>
+      <div class="country-header">
+        <h2>${country.name.common}</h2>
+        <img src="${
+          country.flags?.svg || "https://via.placeholder.com/150"
+        }" alt="Flag of ${country.name.common}" class="country-flag" />
+      </div>
+      <div class="details-content">
+        <p><strong>Native Name:</strong> ${nativeName}</p>
+        <p><strong>Capital:</strong> ${capital}</p>
+        <p><strong>Region:</strong> ${region}</p>
+        <p><strong>Subregion:</strong> ${subregion}</p>
+        <p><strong>Area:</strong> ${area} Km <sup>2</sup></p>
+        <p><strong>Population:</strong> ${population}</p>
+        <p><strong>Languages:</strong> ${languages}</p>
+        <p><strong>Country code:</strong> ${countryPhoneCode}</p>
+        <p><strong>Currencies:</strong> ${currencies}</p>
+        <p><strong>Timezones:</strong> ${timezones}</p>
+        <p><strong>Google Maps:</strong> <a href="${googleMapsLink}" target="_blank">View on Map</a></p>
+      </div>
     `;
 
   container.innerHTML = html;
@@ -71,7 +105,12 @@ async function init() {
 
   // Fetch and render country details
   const countryData = await fetchCountryDetails(countryCode.toUpperCase());
-  renderCountryDetails(countryData[0]);
+  if (countryData) {
+    renderCountryDetails(countryData[0]);
+  } else {
+    document.getElementById("country-details").innerHTML =
+      "<p>Unable to fetch country details. Please try again later.</p>";
+  }
 }
 
 // Initialize the page
