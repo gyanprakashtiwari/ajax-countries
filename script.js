@@ -10,7 +10,8 @@ function fetchCountriesWithAjax() {
   xhr.onload = function () {
     if (xhr.status === 200) {
       const countries = JSON.parse(xhr.responseText); // Parse JSON response
-      console.log("API Response:", countries); // Log the response to console
+      //   console.log(typeof countries.values.);
+      console.log("API Response:", countries[0]);
       renderCountries(countries); // Call render function
     } else {
       console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
@@ -36,7 +37,6 @@ function renderCountries(countries) {
 
     // Calculate the current datetime for the country's timezone or use UTC
     const currentDatetime = calculateDatetime(country.timezones?.[0]);
-    console.log(currentDatetime);
 
     // Create the card HTML
     card.innerHTML = `

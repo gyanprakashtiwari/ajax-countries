@@ -1,0 +1,48 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+}
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.country-details {
+  text-align: center;
+}
+
+.country-details img.country-flag {
+  max-width: 150px;
+  margin-bottom: 20px;
+}
+
+.country-details h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.country-details p {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.country-details a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.country-details a:hover {
+  text-decoration: underline;
+}
