@@ -62,65 +62,50 @@ function renderCountries(countries) {
   });
 }
 function calculateDatetime(timezone) {
-  const now = new Date();
+  // Create a Date object in UTC format
+  const nowUTC = new Date(
+    Date.now() + new Date().getTimezoneOffset() * 60 * 1000
+  );
 
-  // Use the specified timezone if available
-  console.log(typeof timezone);
-
-  console.log(timezone);
-  if (timezone) {
+  if (timezone && timezone.startsWith("UTC")) {
     try {
-      // Convert to specific timezone using Intl.DateTimeFormat
-      const formatter = new Intl.DateTimeFormat("en-GB", {
-        timeZone: timezone,
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      });
+      // Parse the UTC offset (e.g., "UTC+05:00" or "UTC-03:00")
+      const offset = parseUTCOffset(timezone);
+      const localTime = new Date(nowUTC.getTime() + offset * 60 * 60 * 1000);
 
-      // Format the date
-      const parts = formatter.formatToParts(now);
-      const day = parts.find((p) => p.type === "day").value;
-      const month = parts.find((p) => p.type === "month").value;
-      const year = parts.find((p) => p.type === "year").value;
-      const hour = parts.find((p) => p.type === "hour").value;
-      const minute = parts.find((p) => p.type === "minute").value;
-
-      // Get the ordinal suffix for the day
-      const ordinalSuffix = getOrdinalSuffix(day);
-
-      return `${day}${ordinalSuffix} ${month} ${year}, ${hour}:${minute}`;
+      return formatDatetime(localTime);
     } catch (error) {
-      //   console.error("Error formatting datetime:", error);
-      // Fallback to browser's local timezone
-      return formatLocalTimezone(now);
+      //   console.error("Error parsing UTC offset:", error);
+      return formatDatetime(new Date()); // Fallback to browser's local timezone
     }
   } else {
-    // Use browser's local timezone as default
-    return formatLocalTimezone(now);
+    // Default to the browser's local timezone
+    return formatDatetime(new Date());
   }
 }
 
-// Helper function to format a date using the browser's timezone
-function formatLocalTimezone(date) {
-  const formatter = new Intl.DateTimeFormat("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+// Helper function to parse the UTC offset string
+function parseUTCOffset(utcString) {
+  const match = utcString.match(/^UTC([+-]\d{2}):(\d{2})$/);
+  if (!match) {
+    throw new Error(`Invalid UTC format: ${utcString}`);
+  }
 
-  const parts = formatter.formatToParts(date);
-  const day = parts.find((p) => p.type === "day").value;
-  const month = parts.find((p) => p.type === "month").value;
-  const year = parts.find((p) => p.type === "year").value;
-  const hour = parts.find((p) => p.type === "hour").value;
-  const minute = parts.find((p) => p.type === "minute").value;
+  const sign = match[1][0] === "+" ? 1 : -1;
+  const hours = parseInt(match[1].slice(1), 10);
+  const minutes = parseInt(match[2], 10);
+
+  // Convert to total hours (e.g., "+05:30" becomes 5.5)
+  return sign * (hours + minutes / 60);
+}
+
+// Helper function to format the datetime as "29th Dec 2024, 14:20"
+function formatDatetime(date) {
+  const day = date.getDate();
+  const month = date.toLocaleString("en-GB", { month: "short" });
+  const year = date.getFullYear();
+  const hour = String(date.getHours()).padStart(2, "0");
+  const minute = String(date.getMinutes()).padStart(2, "0");
 
   // Get the ordinal suffix for the day
   const ordinalSuffix = getOrdinalSuffix(day);
