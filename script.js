@@ -71,21 +71,22 @@ function getOrdinalSuffix(day) {
 // Function to fetch countries and render cards dynamically
 async function fetchCountriesWithAjax() {
   const apiURL = "https://restcountries.com/v3.1/all"; // API to fetch country data
+    const proxyURL = "https://ajax-countries.vercel.app/" + apiURL; // CORS Proxy URL
+//   const proxyURL = "" + apiURL; // CORS Proxy URL
 
   try {
-    const response = await fetch(apiURL, {
+    const response = await fetch(proxyURL, {
       method: "GET",
       headers: {
-        Accept: "application/json", // Ensures response is in JSON format
+        Accept: "application/json",
       },
-      mode: "cors", // Ensures CORS is handled correctly
     });
+
     if (!response.ok) {
       throw new Error(`Error: ${response.status} - ${response.statusText}`);
     }
 
-    const countries = await response.json(); // Parse JSON response
-    console.log("API Response:", countries[0]);
+    const countries = await response.json(); // Parse the JSON response
 
     renderCountries(countries); // Render all countries initially
     setupSearch(countries); // Set up search functionality
