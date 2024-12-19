@@ -68,10 +68,6 @@ function getOrdinalSuffix(day) {
   }
 }
 
-// Call the function to fetch and render data
-// fetchCountriesWithAjax();
-
-//
 
 // Function to make an AJAX call and render cards
 function fetchCountriesWithAjax() {
