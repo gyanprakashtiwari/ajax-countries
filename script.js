@@ -1,93 +1,3 @@
-// Function to make an AJAX call and render cards
-function fetchCountriesWithAjax() {
-  const xhr = new XMLHttpRequest();
-  const apiURL = "https://restcountries.com/v3.1/all"; // API to fetch country data
-
-  // Open a GET request
-  xhr.open("GET", apiURL, true);
-
-  // Define what happens on successful data submission
-  xhr.onload = function () {
-    if (xhr.status === 200) {
-      const countries = JSON.parse(xhr.responseText); // Parse JSON response
-      //   console.log(typeof countries.values.);
-      console.log("API Response:", countries[0]);
-      renderCountries(countries); // Call render function
-    } else {
-      console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
-    }
-  };
-
-  // Define what happens in case of an error
-  xhr.onerror = function () {
-    console.error("Request failed.");
-  };
-
-  // Send the request
-  xhr.send();
-}
-
-// Function to render country cards dynamically
-function renderCountries(countries) {
-  const cardsContainer = document.getElementById("cards-container"); // Target the right container
-
-  countries.forEach((country) => {
-    const card = document.createElement("div");
-    card.classList.add("card");
-
-    // Calculate the current datetime for the country's timezone or use UTC
-    const currentDatetime = calculateDatetime(country.timezones?.[0]);
-
-    // Create the card HTML
-    card.innerHTML = `
-        <img
-          src="${country.flags?.svg || "https://via.placeholder.com/150"}"
-          alt="Flag of ${country.name.common}"
-          class="card-image"
-        />
-        <div class="card-content">
-          <h2 class="card-heading">${country.name.common}</h2>
-          <p class="card-currency">Currency: ${
-            Object.values(country.currencies || {})
-              .map((c) => c.name)
-              .join(", ") || "N/A"
-          }</p>
-          <p class="card-datetime">Current Date and Time: ${currentDatetime}</p>
-          <div class="card-buttons">
-            <button class="card-button" data-maps-link="${
-              country.maps?.googleMaps || "#"
-            }">Show Map</button>
-            <button class="card-button" data-country-code="${
-              country.cca3
-            }">Detail</button>
-          </div>
-        </div>
-      `;
-
-    // Add event listeners for the buttons
-    const mapButton = card.querySelector("[data-maps-link]");
-    mapButton.addEventListener("click", (event) => {
-      const mapsLink = event.target.getAttribute("data-maps-link");
-      if (mapsLink && mapsLink !== "#") {
-        window.open(mapsLink, "_blank");
-      } else {
-        alert("Google Maps link not available for this country.");
-      }
-    });
-
-    const detailButton = card.querySelector("[data-country-code]");
-    detailButton.addEventListener("click", (event) => {
-      const countryCode = event.target.getAttribute("data-country-code");
-      if (countryCode) {
-        window.location.href = `detail.html?country=${countryCode}`;
-      }
-    });
-
-    // Append the card to the container
-    cardsContainer.appendChild(card);
-  });
-}
-
 function calculateDatetime(timezone) {
   // Create a Date object in UTC format
   const nowUTC = new Date(
@@ -156,6 +66,126 @@ function getOrdinalSuffix(day) {
     default:
       return "th";
   }
+}
+
+// Call the function to fetch and render data
+// fetchCountriesWithAjax();
+
+//
+
+// Function to make an AJAX call and render cards
+function fetchCountriesWithAjax() {
+  const xhr = new XMLHttpRequest();
+  const apiURL = "https://restcountries.com/v3.1/all"; // API to fetch country data
+
+  // Open a GET request
+  xhr.open("GET", apiURL, true);
+
+  // Define what happens on successful data submission
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      const countries = JSON.parse(xhr.responseText); // Parse JSON response
+      console.log("API Response:", countries[0]);
+      renderCountries(countries); // Render all countries initially
+      setupSearch(countries); // Set up search functionality
+    } else {
+      console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+    }
+  };
+
+  // Define what happens in case of an error
+  xhr.onerror = function () {
+    console.error("Request failed.");
+  };
+
+  // Send the request
+  xhr.send();
+}
+
+// Function to render country cards dynamically
+function renderCountries(countries) {
+  const cardsContainer = document.getElementById("cards-container"); // Target the right container
+
+  // Clear the container before rendering
+  cardsContainer.innerHTML = "";
+
+  countries.forEach((country) => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    // Calculate the current datetime for the country's timezone or use UTC
+    const currentDatetime = calculateDatetime(country.timezones?.[0]);
+
+    // Create the card HTML
+    card.innerHTML = `
+          <img
+            src="${country.flags?.svg || "https://via.placeholder.com/150"}"
+            alt="Flag of ${country.name.common}"
+            class="card-image"
+          />
+          <div class="card-content">
+            <h2 class="card-heading">${country.name.common}</h2>
+            <p class="card-currency">Currency: ${
+              Object.values(country.currencies || {})
+                .map((c) => c.name)
+                .join(", ") || "N/A"
+            }</p>
+            <p class="card-datetime">Current Date and Time: ${currentDatetime}</p>
+            <div class="card-buttons">
+              <button class="card-button" data-maps-link="${
+                country.maps?.googleMaps || "#"
+              }">Show Map</button>
+              <button class="card-button" data-country-code="${
+                country.cca3
+              }">Detail</button>
+            </div>
+          </div>
+        `;
+
+    // Add event listeners for the buttons
+    const mapButton = card.querySelector("[data-maps-link]");
+    mapButton.addEventListener("click", (event) => {
+      const mapsLink = event.target.getAttribute("data-maps-link");
+      if (mapsLink && mapsLink !== "#") {
+        window.open(mapsLink, "_blank");
+      } else {
+        alert("Google Maps link not available for this country.");
+      }
+    });
+
+    const detailButton = card.querySelector("[data-country-code]");
+    detailButton.addEventListener("click", (event) => {
+      const countryCode = event.target.getAttribute("data-country-code");
+      if (countryCode) {
+        window.location.href = `detail.html?country=${countryCode}`;
+      }
+    });
+
+    // Append the card to the container
+    cardsContainer.appendChild(card);
+  });
+}
+
+// Function to set up search functionality
+function setupSearch(countries) {
+  const searchInput = document.querySelector(".search-input");
+  const searchButton = document.getElementById("search-btn");
+
+  // Add event listener to search button
+  searchButton.addEventListener("click", () => {
+    const query = searchInput.value.toLowerCase(); // Get the search input and convert to lowercase
+    const filteredCountries = countries.filter((country) =>
+      country.name.common.toLowerCase().includes(query)
+    );
+    renderCountries(filteredCountries); // Re-render the cards with filtered countries
+  });
+
+  // Add event listener for "Enter" key in the input field
+  searchInput.addEventListener("keyup", (event) => {
+    if (event.key === "Enter") {
+      searchButton.click(); // Trigger the search button's click event
+    }
+  });
 }
 
 // Call the function to fetch and render data
