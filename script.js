@@ -38,6 +38,7 @@ function renderCountries(countries) {
     const currentDatetime = calculateDatetime(country.timezones?.[0]);
     console.log(currentDatetime);
 
+    // Create the card HTML
     card.innerHTML = `
         <img
           src="${country.flags?.svg || "https://via.placeholder.com/150"}"
@@ -53,14 +54,40 @@ function renderCountries(countries) {
           }</p>
           <p class="card-datetime">Current Date and Time: ${currentDatetime}</p>
           <div class="card-buttons">
-            <button class="card-button">Show Map</button>
-            <button class="card-button">Detail</button>
+            <button class="card-button" data-maps-link="${
+              country.maps?.googleMaps || "#"
+            }">Show Map</button>
+            <button class="card-button" data-country-code="${
+              country.cca3
+            }">Detail</button>
           </div>
         </div>
       `;
-    cardsContainer.appendChild(card); // Append to the correct div
+
+    // Add event listeners for the buttons
+    const mapButton = card.querySelector("[data-maps-link]");
+    mapButton.addEventListener("click", (event) => {
+      const mapsLink = event.target.getAttribute("data-maps-link");
+      if (mapsLink && mapsLink !== "#") {
+        window.open(mapsLink, "_blank");
+      } else {
+        alert("Google Maps link not available for this country.");
+      }
+    });
+
+    const detailButton = card.querySelector("[data-country-code]");
+    detailButton.addEventListener("click", (event) => {
+      const countryCode = event.target.getAttribute("data-country-code");
+      if (countryCode) {
+        window.location.href = `detail.html?country=${countryCode}`;
+      }
+    });
+
+    // Append the card to the container
+    cardsContainer.appendChild(card);
   });
 }
+
 function calculateDatetime(timezone) {
   // Create a Date object in UTC format
   const nowUTC = new Date(
