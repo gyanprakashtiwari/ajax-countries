@@ -1,29 +1,20 @@
 // Function to fetch countries and render cards dynamically
 async function fetchCountriesWithAjax() {
-  const apiURL = "https://restcountries.com/v3.1/all"; // API to fetch country data
-
+  const apiURL = "https://restcountries.com/v3.1/all";
   console.log("Fetching countries from:", apiURL);
 
   try {
-    const response = await fetch(apiURL, {
-      method: "GET",
+    const response = await axios.get(apiURL, {
       headers: {
-        Accept: "application/json", // Ensures the response is in JSON format
+        Accept: "application/json",
       },
-      mode: "cors", // Ensures CORS is handled correctly
     });
 
-    if (!response.ok) {
-      throw new Error(
-        `Error fetching countries: ${response.status} - ${response.statusText}`
-      );
-    }
-
-    const countries = await response.json(); // Parse the JSON response
+    const countries = response.data; // Axios automatically parses JSON
     console.log("Fetched countries:", countries.length);
 
-    renderCountries(countries); // Render all countries initially
-    setupSearch(countries); // Set up search functionality
+    renderCountries(countries);
+    setupSearch(countries);
   } catch (error) {
     console.error("Request failed:", error.message);
   }
