@@ -1,3 +1,34 @@
+// Function to fetch countries and render cards dynamically
+async function fetchCountriesWithAjax() {
+  const apiURL = "https://restcountries.com/v3.1/all"; // API to fetch country data
+
+  console.log("Fetching countries from:", apiURL);
+
+  try {
+    const response = await fetch(apiURL, {
+      method: "GET",
+      headers: {
+        Accept: "application/json", // Ensures the response is in JSON format
+      },
+      mode: "cors", // Ensures CORS is handled correctly
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching countries: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const countries = await response.json(); // Parse the JSON response
+    console.log("Fetched countries:", countries.length);
+
+    renderCountries(countries); // Render all countries initially
+    setupSearch(countries); // Set up search functionality
+  } catch (error) {
+    console.error("Request failed:", error.message);
+  }
+}
+
 // Function to calculate the current datetime based on a timezone
 function calculateDatetime(timezone) {
   // Create a Date object in UTC format
@@ -65,33 +96,6 @@ function getOrdinalSuffix(day) {
       return "rd";
     default:
       return "th";
-  }
-}
-
-// Function to fetch countries and render cards dynamically
-async function fetchCountriesWithAjax() {
-  const apiURL = "https://restcountries.com/v3.1/all"; // API to fetch country data
-//   const proxyURL = `https://api.allorigins.win/get?url=${encodeURIComponent(apiURL)}`; // CORS Proxy URL
-    const proxyURL = "" + apiURL; // CORS Proxy URL
-
-  try {
-    const response = await fetch(proxyURL, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status} - ${response.statusText}`);
-    }
-
-    const countries = await response.json(); // Parse the JSON response
-
-    renderCountries(countries); // Render all countries initially
-    setupSearch(countries); // Set up search functionality
-  } catch (error) {
-    console.error("Request failed:", error.message);
   }
 }
 
