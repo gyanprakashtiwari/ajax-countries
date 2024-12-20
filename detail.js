@@ -1,57 +1,43 @@
 // Function to fetch all countries
 async function fetchAllCountries() {
-  try {
-    const apiURL = "https://restcountries.com/v3.1/all";
-    console.log("Fetching all countries from: ", apiURL);
+  const apiURL = "https://restcountries.com/v3.1/all";
+  console.log("Fetching all countries from:", apiURL);
 
-    const response = await fetch(apiURL, {
-      method: "GET",
+  try {
+    // Use Axios for the HTTP request
+    const response = await axios.get(apiURL, {
       headers: {
         Accept: "application/json", // Ensures response is in JSON format
       },
-      mode: "cors", // Ensures CORS is handled correctly
     });
 
-    if (!response.ok) {
-      throw new Error(
-        `Error fetching all countries: ${response.status} - ${response.statusText}`
-      );
-    }
-
-    const data = await response.json();
-    console.log("Fetched countries: ", data.length);
+    const data = response.data; // Axios automatically parses JSON
+    console.log("Fetched countries:", data.length);
     return data;
   } catch (error) {
-    console.error("Fetch error: ", error);
+    console.error("Fetch error:", error.message);
     return [];
   }
 }
 
 // Function to fetch country details by code
 async function fetchCountryDetails(code) {
-  try {
-    const apiURL = `https://restcountries.com/v3.1/alpha/${code}`;
-    console.log(`Fetching country details from: ${apiURL}`);
+  const apiURL = `https://restcountries.com/v3.1/alpha/${code}`;
+  console.log(`Fetching country details from: ${apiURL}`);
 
-    const response = await fetch(apiURL, {
-      method: "GET",
+  try {
+    // Use Axios for the HTTP request
+    const response = await axios.get(apiURL, {
       headers: {
         Accept: "application/json", // Ensures response is in JSON format
       },
-      mode: "cors", // Ensures CORS is handled correctly
     });
 
-    if (!response.ok) {
-      throw new Error(
-        `Error fetching country details: ${response.status} - ${response.statusText}`
-      );
-    }
-
-    const data = await response.json();
-    console.log("Fetched country details: ", data);
+    const data = response.data; // Axios automatically parses JSON
+    console.log("Fetched country details:", data);
     return data[0]; // Return the first object from the array
   } catch (error) {
-    console.error("Fetch error: ", error);
+    console.error("Fetch error:", error.message);
     return null;
   }
 }
