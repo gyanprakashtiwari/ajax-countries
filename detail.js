@@ -1,32 +1,65 @@
-// Helper function to extract query parameters from the URL
-function getQueryParameter(name) {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(name);
+// Function to fetch all countries
+async function fetchAllCountries() {
+  try {
+    const apiURL = "https://restcountries.com/v3.1/all";
+    console.log("Fetching all countries from: ", apiURL);
+
+    const response = await fetch(apiURL, {
+      method: "GET",
+      headers: {
+        Accept: "application/json", // Ensures response is in JSON format
+      },
+      mode: "cors", // Ensures CORS is handled correctly
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching all countries: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    console.log("Fetched countries: ", data.length);
+    return data;
+  } catch (error) {
+    console.error("Fetch error: ", error);
+    return [];
+  }
 }
 
 // Function to fetch country details by code
 async function fetchCountryDetails(code) {
   try {
     const apiURL = `https://restcountries.com/v3.1/alpha/${code}`;
-    const proxyURL = apiURL;
+    console.log(`Fetching country details from: ${apiURL}`);
 
-    const response = await fetch(proxyURL, {
+    const response = await fetch(apiURL, {
       method: "GET",
       headers: {
-        Accept: "application/json", // Ensuring response is in JSON format
+        Accept: "application/json", // Ensures response is in JSON format
       },
       mode: "cors", // Ensures CORS is handled correctly
     });
 
     if (!response.ok) {
-      throw new Error(`Error fetching country details: ${response.statusText}`);
+      throw new Error(
+        `Error fetching country details: ${response.status} - ${response.statusText}`
+      );
     }
+
     const data = await response.json();
+    console.log("Fetched country details: ", data);
     return data[0]; // Return the first object from the array
   } catch (error) {
-    console.error(error);
+    console.error("Fetch error: ", error);
     return null;
   }
+}
+
+// Helper function to extract query parameters from the URL
+function getQueryParameter(name) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
 }
 
 // Helper function to get the first non-English native name
@@ -38,30 +71,6 @@ function getNonEnglishNativeName(nativeNames) {
     }
   }
   return "N/A";
-}
-
-// Function to fetch all countries
-async function fetchAllCountries() {
-  try {
-    const apiURL = "https://restcountries.com/v3.1/all";
-    const proxyURL = apiURL;
-
-    const response = await fetch(proxyURL, {
-      method: "GET",
-      headers: {
-        Accept: "application/json", // Ensures response is in JSON format
-      },
-      mode: "cors", // Ensures CORS is handled correctly
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error fetching all countries: ${response.statusText}`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
 }
 
 // Function to render country details
