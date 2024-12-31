@@ -14,7 +14,7 @@ main {
 }
 
 .container {
-  width: 50%; /* 60% of the screen width */
+  width: 45%; /* 60% of the screen width */
   height: 100vh; /* Full height of the viewport */
   background-color: #fff; /* White background for the container */
   display: flex;
@@ -29,7 +29,8 @@ main {
 .search-container {
   display: flex;
   align-items: center;
-  border: 1px solid black;
+  border: 1px solid gray;
+  border-radius: 4px;
   overflow: hidden;
   margin-bottom: 10px;
 }
@@ -79,8 +80,9 @@ main {
   margin-bottom: 20px;
   padding: 10px;
   overflow: hidden;
-  border: 1px solid black;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid gray;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(222, 218, 218, 0.1);
 }
 
 /* Image styling */
@@ -120,8 +122,11 @@ main {
 
 .card-button {
   padding: 8px 16px;
-  border: 2px solid blue;
+  border: 3px solid blue;
+  border-radius: 3px;
   background-color: white;
+  font-size: 20px;
+  font-weight: 450;
   color: blue;
   cursor: pointer;
   flex: 1;

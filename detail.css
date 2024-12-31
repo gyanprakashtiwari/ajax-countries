@@ -35,8 +35,9 @@ h1 {
 }
 
 .country-header img.country-flag {
-  max-width: 500px;
-  max-height: 600px;
+  height: 250px;
+  width: 90%;
+  background-size: contain;
   object-fit: cover;
 }
 
@@ -47,7 +48,7 @@ h1 {
 
 .details-content {
   padding-top: 50px;
-  margin-left: 20px;
+  margin-left: auto;
   text-align: left;
   flex-grow: 1;
   width: 50%;
