@@ -102,19 +102,19 @@ function renderCountryDetails(country) {
             }" alt="Flag of ${country.name.common}" class="country-flag" />
           </div>
           <div class="details-content">
-            <p><strong>Native Name:</strong> ${nativeName}</p>
-            <p><strong>Capital:</strong> ${capital}</p>
-            <p><strong>Region:</strong> ${region}</p>
-            <p><strong>Subregion:</strong> ${subregion}</p>
-            <p><strong>Area:</strong> ${area} Km<sup>2</sup></p>
-            <p><strong>Population:</strong> ${population}</p>
-            <p><strong>Languages:</strong> ${languages}</p>
-            <p><strong>Country Code:</strong> ${countryPhoneCode}</p>
-            <p><strong>Currencies:</strong> ${currencies}</p>
-            <p><strong>Timezones:</strong> ${timezones}</p>
-            <p><strong>Google Maps:</strong> <a href="${googleMapsLink}" target="_blank">View on Map</a></p>
+            <p>Native Name: ${nativeName}</p>
+            <p>Capital: ${capital}</p>
+            <p>Region: ${region}</p>
+            <p>Subregion: ${subregion}</p>
+            <p>Area: ${area} Km<sup>2</sup></p>
+            <p>Population: ${population}</p>
+            <p>Languages: ${languages}</p>
+            <p>Country Code: ${countryPhoneCode}</p>
+            <p>Currencies: ${currencies}</p>
+            <p>Timezones: ${timezones}</p>
           </div>
         `;
+  // <p>Google Maps: <a href="${googleMapsLink}" target="_blank">View on Map</a></p>
 
   container.innerHTML = html;
 }
