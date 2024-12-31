@@ -54,9 +54,15 @@ main {
   color: black;
   transition: background-color 0.3s;
 }
+.search-btn img {
+  background-color: white;
+  color: gray;
+  height: 35px;
+  width: 35px;
+}
 
 .search-btn:hover {
-  background-color: #f0f0f0;
+  background-color: white;
 }
 
 #cards-container {
